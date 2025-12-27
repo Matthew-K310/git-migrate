@@ -1,0 +1,194 @@
+#+TITLE: git-migrate
+#+AUTHOR: Matthew Kennedy
+#+DATE: <2025-12-22 Mon>
+#+PROPERTY: header-args:go :noweb yes
+
+* Introduction
+
+git-migrate is a command-line tool created with the intent of making the move
+from one git forge to another more convenient.
+
+Supported forges include:
+- Github
+- Codeberg
+- Forgejo
+
+Forges to add include:
+- Sourcehut
+- Gitlab main
+- Gitlab self-host
+- Gitea
+
+* Usage
+To see available commands, run:
+#+begin_src shell
+gim --help
+#+end_src
+
+* Package and Imports
+
+Every Go program starts with a package declaration and imports:
+
+#+NAME: package-and-imports
+#+BEGIN_SRC go
+package main
+
+import (
+	"fmt"
+	"log"
+	
+	"github.com/charmbracelet/huh"
+	"github.com/joho/godotenv"
+)
+#+END_SRC
+
+* Forge setup
+
+** Forge request structure
+The generic structure allows for this program to be used with the Git forge of
+your choosing.
+
+To add your source forge information, run:
+
+#+begin_src shell
+gim auth source
+#+end_src
+
+To add your target forge information, run:
+
+#+begin_src shell
+gim auth target
+#+end_src
+
+Both of these will prompt you to input your credentials (via [[https:github.com/charmbracelet/huh][huh]]), which will
+then be inserted into a .env file.
+
+#+NAME: forge-setup
+#+BEGIN_SRC go
+type Forge struct {
+	SourceType string
+	SourceUsername string
+	SourceToken string
+	SourceDomain string
+	
+	TargetType string
+	TargetUsername string
+	TargetToken string
+	TargetDomain string
+
+	MakePrivate bool
+	EnableMirror bool
+}
+
+func SourceAuth() {
+	huh.NewInput().
+		Title("Enter your Git forge").
+		Prompt("Forge location...").
+		Value(&SourceType).
+		Run()
+	
+	file, err := os.Create(".env")
+	if err != nil {
+		log.Fatalf("failed to create .env file: %v", err)
+	}
+	defer file.Close()
+
+	_, err = fmt.Fprintf(file, "SRC_USER=%s\n", SourceUsername)
+	if err != nil {
+		log.Fatalf("failed to write to .env file: %v", err)
+	}
+
+	fmt.Println("Saved SRC_USER to .env")
+	
+
+	huh.NewInput().
+		Title("Enter your forge username").
+		Prompt("Forge username").
+		Value(SourceUsername).
+		Run()
+
+	file, err := os.Create(".env")
+	if err != nil {
+		log.Fatalf("failed to create .env file: %v", err)
+	}
+	defer file.Close()
+
+	_, err = fmt.Fprintf(file, "SRC_USER=%s\n", SourceUsername)
+	if err != nil {
+		log.Fatalf("failed to write to .env file: %v", err)
+	}
+
+	fmt.Println("Saved SRC_USER to .env")
+	
+	
+	huh.NewInput().
+		Title("Enter your forge domain (for custom forges)").
+		Prompt("Forge domain").
+		Value(SourceDomain).
+		Run()
+	
+	file, err := os.Create(".env")
+	if err != nil {
+		log.Fatalf("failed to create .env file: %v", err)
+	}
+	defer file.Close()
+
+	_, err = fmt.Fprintf(file, "SRC_USER=%s\n", SourceUsername)
+	if err != nil {
+		log.Fatalf("failed to write to .env file: %v", err)
+	}
+
+	fmt.Println("Saved SRC_DOMAIN to .env")
+
+	huh.NewInput().
+		Title("Enter your forge token").
+		Prompt("Forge token").
+		Value(SourceToken).
+		Run()
+	
+	file, err := os.Create(".env")
+	if err != nil {
+		log.Fatalf("failed to create .env file: %v", err)
+	}
+	defer file.Close()
+
+	_, err = fmt.Fprintf(file, "SRC_USER=%s\n", SourceUsername)
+	if err != nil {
+		log.Fatalf("failed to write to .env file: %v", err)
+	}
+
+	fmt.Println("Saved SRC_TOKEN to .env")
+	
+}
+#+END_SRC
+
+** Repo request structure
+#+NAME: repo-struct
+#+BEGIN_SRC go
+type Repository struct {
+	Name string
+	CloneURL string
+	SSHURL string
+}
+#+END_SRC
+
+
+
+
+** Complete Program
+
+This is the final tangled output combining all sections:
+
+#+BEGIN_SRC go :tangle main.go
+<<package-and-imports>>
+
+<<forge-struct>>
+
+<<repo-struct>>
+
+<<main-function>>
+#+END_SRC
+
+* Usage
+
+
