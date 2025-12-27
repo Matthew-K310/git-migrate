@@ -19,6 +19,12 @@ Forges to add include:
 - Gitlab self-host
 - Gitea
 
+* Usage
+To see available commands, run:
+#+begin_src shell
+gim --help
+#+end_src
+
 * Package and Imports
 
 Every Go program starts with a package declaration and imports:
@@ -36,45 +42,138 @@ import (
 )
 #+END_SRC
 
-* 
+* Forge setup
 
 ** Forge request structure
+The generic structure allows for this program to be used with the Git forge of
+your choosing.
 
-This defines what attributes are to be queried by the program in regards to
-forge information (Github, Codeberg, Forgejo, etc.)
+To add your source forge information, run:
 
-#+NAME: forge-struct
+#+begin_src shell
+gim auth source
+#+end_src
+
+To add your target forge information, run:
+
+#+begin_src shell
+gim auth target
+#+end_src
+
+Both of these will prompt you to input your credentials (via [[https:github.com/charmbracelet/huh][huh]]), which will
+then be inserted into a .env file.
+
+#+NAME: forge-setup
 #+BEGIN_SRC go
-func placholder() {
-	fmt.Println("Hello, World!")
+type Forge struct {
+	SourceType string
+	SourceUsername string
+	SourceToken string
+	SourceDomain string
+	
+	TargetType string
+	TargetUsername string
+	TargetToken string
+	TargetDomain string
+
+	MakePrivate bool
+	EnableMirror bool
+}
+
+func SourceAuth() {
+	huh.NewInput().
+		Title("Enter your Git forge").
+		Prompt("Forge location...").
+		Value(&SourceType).
+		Run()
+	
+	file, err := os.Create(".env")
+	if err != nil {
+		log.Fatalf("failed to create .env file: %v", err)
+	}
+	defer file.Close()
+
+	_, err = fmt.Fprintf(file, "SRC_USER=%s\n", SourceUsername)
+	if err != nil {
+		log.Fatalf("failed to write to .env file: %v", err)
+	}
+
+	fmt.Println("Saved SRC_USER to .env")
+	
+
+	huh.NewInput().
+		Title("Enter your forge username").
+		Prompt("Forge username").
+		Value(SourceUsername).
+		Run()
+
+	file, err := os.Create(".env")
+	if err != nil {
+		log.Fatalf("failed to create .env file: %v", err)
+	}
+	defer file.Close()
+
+	_, err = fmt.Fprintf(file, "SRC_USER=%s\n", SourceUsername)
+	if err != nil {
+		log.Fatalf("failed to write to .env file: %v", err)
+	}
+
+	fmt.Println("Saved SRC_USER to .env")
+	
+	
+	huh.NewInput().
+		Title("Enter your forge domain (for custom forges)").
+		Prompt("Forge domain").
+		Value(SourceDomain).
+		Run()
+	
+	file, err := os.Create(".env")
+	if err != nil {
+		log.Fatalf("failed to create .env file: %v", err)
+	}
+	defer file.Close()
+
+	_, err = fmt.Fprintf(file, "SRC_USER=%s\n", SourceUsername)
+	if err != nil {
+		log.Fatalf("failed to write to .env file: %v", err)
+	}
+
+	fmt.Println("Saved SRC_DOMAIN to .env")
+
+	huh.NewInput().
+		Title("Enter your forge token").
+		Prompt("Forge token").
+		Value(SourceToken).
+		Run()
+	
+	file, err := os.Create(".env")
+	if err != nil {
+		log.Fatalf("failed to create .env file: %v", err)
+	}
+	defer file.Close()
+
+	_, err = fmt.Fprintf(file, "SRC_USER=%s\n", SourceUsername)
+	if err != nil {
+		log.Fatalf("failed to write to .env file: %v", err)
+	}
+
+	fmt.Println("Saved SRC_TOKEN to .env")
+	
 }
 #+END_SRC
 
+** Repo request structure
 #+NAME: repo-struct
 #+BEGIN_SRC go
-func placholder() {
-	fmt.Println("Goodbye, Mars!")
+type Repository struct {
+	Name string
+	CloneURL string
+	SSHURL string
 }
 #+END_SRC
 
-* Github
-This is placeholder text.
 
-* Codeberg
-This is placeholder text.
 
-* Forgejo
-This is placeholder text.
-
-# * Gitea
-
-# * Gitlab
-
-# * Gitlab (self-hosted)
-
-# * Sourcehut
-
-* Main Function
 
 ** Complete Program
 
