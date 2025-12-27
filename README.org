@@ -1,12 +1,10 @@
 #+TITLE: git-migrate
+#+DESCRIPTION: A tool for copying repos between git forges.
 #+AUTHOR: Matthew Kennedy
 #+DATE: <2025-12-22 Mon>
 #+PROPERTY: header-args:go :noweb yes
 
 * Introduction
-
-git-migrate is a literately programmed command-line tool created with the intent
-of making the move from one git forge to another more convenient.
 
 Supported forges include:
 - Github
@@ -20,6 +18,7 @@ TODO
 - Gitea
 
 * Usage
+
 To see available commands, run:
 #+begin_src shell
 gim --help
@@ -49,12 +48,11 @@ The generic structure allows for this program to be used with the Git forge of
 your choosing.
 
 To add your source forge information, run:
-
+#+begin_src shell
 gim auth source
 #+end_src
 
 To add your target forge information, run:
-
 #+begin_src shell
 gim auth target
 #+end_src
