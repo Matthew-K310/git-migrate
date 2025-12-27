@@ -5,15 +5,15 @@
 
 * Introduction
 
-git-migrate is a command-line tool created with the intent of making the move
-from one git forge to another more convenient.
+git-migrate is a literately programmed command-line tool created with the intent
+of making the move from one git forge to another more convenient.
 
 Supported forges include:
 - Github
 - Codeberg
 - Forgejo
 
-Forges to add include:
+TODO 
 - Sourcehut
 - Gitlab main
 - Gitlab self-host
@@ -50,7 +50,6 @@ your choosing.
 
 To add your source forge information, run:
 
-#+begin_src shell
 gim auth source
 #+end_src
 
@@ -162,31 +161,26 @@ func SourceAuth() {
 }
 #+END_SRC
 
-** Repo request structure
 #+NAME: repo-struct
 #+BEGIN_SRC go
 type Repository struct {
 	Name string
 	CloneURL string
 	SSHURL string
-}
 #+END_SRC
-
-
-
 
 ** Complete Program
 
 This is the final tangled output combining all sections:
 
 #+BEGIN_SRC go :tangle main.go
-<<package-and-imports>>
+// <<package-and-imports>>
 
-<<forge-struct>>
+// <<forge-structure>>
 
-<<repo-struct>>
+// <<repo-structure>>
 
-<<main-function>>
+// <<main-function>>
 #+END_SRC
 
 * Usage
